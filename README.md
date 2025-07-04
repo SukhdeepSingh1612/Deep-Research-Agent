@@ -1,5 +1,6 @@
 # 🔬 Deep Research Web App
 
+### Deployed on Streamlit : https://deep-research-agent-cerh28nrsdgdjnpgqgvnck.streamlit.app/
 This project is an intelligent, end-to-end research assistant built using **Streamlit**, **OpenAI GPT-4o**, and a suite of modular agents. It accepts a topic from the user, performs structured research via web search, generates a detailed markdown report, and sends the report via email.
 
 ---
