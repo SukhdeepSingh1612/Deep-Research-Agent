@@ -1,107 +1,41 @@
-import gradio as gr
-import time
+import streamlit as st
 from dotenv import load_dotenv
-# from research_manager import ResearchManager # Your original import
+from research_manager import ResearchManager
+import asyncio
 
-# --- Placeholder for demonstration. You can replace this with your actual ResearchManager.
-class ResearchManager:
-    """A placeholder class to simulate the streaming research process."""
-    async def run(self, query: str):
-        report = ""
-        # Simulate generating a report in chunks
-        yield "## Researching: *{}*\n\n".format(query)
-        time.sleep(1)
-        for i in range(5):
-            chunk = f"### Section {i+1}\n\nThis is a chunk of the generated report. It's part of an ongoing stream of information that is being actively researched and compiled.\n\n"
-            report += chunk
-            yield report
-            time.sleep(0.5)
-        yield report + "\n\n**Research complete.**"
-# ---
-
+# Load environment variables from your .env file
 load_dotenv(override=True)
 
-
+# Define the asynchronous function that streams the research report
 async def run(query: str):
-    """The main async generator function that streams the research report."""
-    # This function is now cleaner, only focusing on generating the report.
+    """
+    Asynchronously runs the research manager and yields the output chunks.
+    """
     async for chunk in ResearchManager().run(query):
         yield chunk
 
+# --- Streamlit UI Implementation ---
 
-def start_research():
-    """Updates the UI to a 'running' state when research begins."""
-    return {
-        run_button: gr.Button(value="Running...", interactive=False),
-        query_textbox: gr.Textbox(interactive=False),
-        report: gr.Markdown(value="⏳ **Starting research... Please wait.**"),
-    }
+# Set the title of the web app
+st.title("Deep Research 🔬")
 
-def end_research():
-    """Resets the UI to its original state after research is complete."""
-    return {
-        run_button: gr.Button(value="Run", interactive=True),
-        query_textbox: gr.Textbox(interactive=True),
-    }
-
-
-# Theming and Layout
-with gr.Blocks(theme=gr.themes.Soft(primary_hue="sky")) as ui:
-    gr.Markdown(
-        """
-        # 🚀 Deep Research Assistant
-        Enter a topic to generate a comprehensive, streaming research report.
-        """
-    )
-
-    # Improved layout for input controls
-    with gr.Row():
-        query_textbox = gr.Textbox(
-            label="What topic would you like to research?",
-            placeholder="e.g., The future of renewable energy",
-            scale=4, # Makes the textbox take up more space
-        )
-        run_button = gr.Button("Run", variant="primary", scale=1)
-
-    # The main output area for the report
-    report = gr.Markdown(label="Report")
+# Create a form to contain the user input and the run button
+with st.form(key='research_form'):
+    # Create a text input field for the research topic
+    query_textbox = st.text_input("What topic would you like to research?")
     
-    # --- Event Handling ---
-    # Chain events together for a seamless user experience
-    
-    # 1. When the button is clicked, call `start_research` to update the UI.
-    # 2. Then, call the main `run` function to stream the report.
-    # 3. Finally, call `end_research` to reset the UI controls.
-    run_button.click(
-        fn=start_research, 
-        outputs=[run_button, query_textbox, report]
-    ).then(
-        fn=run, 
-        inputs=query_textbox, 
-        outputs=report
-    ).then(
-        fn=end_research, 
-        outputs=[run_button, query_textbox]
-    )
+    # Create a submit button for the form
+    run_button = st.form_submit_button("Run", type="primary")
 
-    # Allow submitting with the "Enter" key
-    query_textbox.submit(
-        fn=start_research, 
-        outputs=[run_button, query_textbox, report]
-    ).then(
-        fn=run, 
-        inputs=query_textbox, 
-        outputs=report
-    ).then(
-        fn=end_research, 
-        outputs=[run_button, query_textbox]
-    )
-    
-    # Add examples for user guidance
-    gr.Examples(
-        ["The impact of AI on climate change", "History of the internet", "Benefits of mindfulness"],
-        inputs=query_textbox,
-        label="Example Topics"
-    )
-
-ui.launch(inbrowser=True)
+# This block executes only when the form's 'Run' button is clicked
+if run_button:
+    if query_textbox:
+        st.markdown("---") # Add a horizontal rule for visual separation
+        # Add a subheader for the report section
+        st.markdown("### Report")
+        
+        # st.write_stream is the ideal way to handle and display streams of data
+        st.write_stream(run(query_textbox))
+    else:
+        # Show a warning if the user clicks 'Run' without entering a topic
+        st.warning("Please enter a topic to research.")
