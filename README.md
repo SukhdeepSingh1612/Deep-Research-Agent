@@ -1,17 +1,19 @@
-# 🧠 Deep Research Assistant
+# 🔬 Deep Research Web App
 
-This is an intelligent, end-to-end research assistant built with **Gradio**, **OpenAI GPT-4o**, and **custom agent orchestration**. It takes a user query and performs structured, streaming research—culminating in a well-formatted report sent via email.
+This project is an intelligent, end-to-end research assistant built using **Streamlit**, **OpenAI GPT-4o**, and a suite of modular agents. It accepts a topic from the user, performs structured research via web search, generates a detailed markdown report, and sends the report via email.
 
 ---
 
 ## 🚀 Features
 
-- 📥 Accepts user queries for deep research
-- 🔍 Uses OpenAI agents to plan, perform web searches, and compile structured research
-- ✍️ Generates a markdown research report (5–10 pages)
-- 📧 Automatically emails the final report
-- 🌐 Web-based Gradio UI with live streaming updates
-- ⚙️ Modular, agent-based design (planner, searcher, writer, emailer)
+- 📝 Streamlit UI for topic submission and live report generation
+- 🧠 Modular research pipeline:
+  - `Planner Agent`: Plans relevant web searches
+  - `Search Agent`: Performs and summarizes the search
+  - `Writer Agent`: Creates a detailed, cohesive report
+  - `Email Agent`: Sends the report via email
+- 🔁 Asynchronous streaming of research progress
+- 📩 Email delivery using SendGrid
 
 ---
 
@@ -19,25 +21,25 @@ This is an intelligent, end-to-end research assistant built with **Gradio**, **O
 
 ```
 .
-├── app.py                  # Gradio UI and streaming logic
-├── research_manager.py     # Orchestration of all research agents
+├── app.py                  # Streamlit UI and async interaction
+├── research_manager.py     # Orchestration logic for the research agents
 ├── agents/
-│   ├── search_agent.py     # Agent for web searching
-│   ├── planner_agent.py    # Agent for planning search terms
-│   ├── writer_agent.py     # Agent for generating the report
-│   └── email_agent.py      # Agent for sending the final report via email
+│   ├── search_agent.py     # Search summarizer agent
+│   ├── planner_agent.py    # Plans relevant search terms
+│   ├── writer_agent.py     # Generates detailed markdown report
+│   └── email_agent.py      # Sends formatted email with report
 └── README.md
 ```
 
 ---
 
-## 🛠️ Installation
+## ⚙️ Setup Instructions
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-org/deep-research-assistant.git
-cd deep-research-assistant
+git clone https://github.com/your-org/deep-research-app.git
+cd deep-research-app
 ```
 
 ### 2. Install Dependencies
@@ -46,72 +48,54 @@ cd deep-research-assistant
 pip install -r requirements.txt
 ```
 
-> Required packages include: `gradio`, `openai`, `pydantic`, `sendgrid`, `python-dotenv`, `asyncio`, etc.
+### 3. Set Environment Variables
 
-### 3. Configure Environment Variables
-
-Create a `.env` file and add the following:
+Create a `.env` file:
 
 ```env
-OPENAI_API_KEY=your-openai-key
+OPENAI_API_KEY=your-openai-api-key
 SENDGRID_API_KEY=your-sendgrid-api-key
 ```
 
 ---
 
-## 🧪 Usage
+## 🧪 Running the App
 
-### Run Locally
+Launch the Streamlit application:
 
 ```bash
-python app.py
+streamlit run app.py
 ```
 
-This will launch the Gradio app in your browser. Type a research topic and get a detailed, AI-generated report streamed in real-time and sent to your email.
+Then open the URL in your browser to access the interface.
 
 ---
 
 ## 💡 Example Topics
 
-- "The future of renewable energy"
-- "The impact of AI on mental health"
-- "History of quantum computing"
+- “The ethical implications of artificial intelligence”
+- “Trends in renewable energy for 2030”
+- “The future of quantum computing”
 
 ---
 
-## 🧩 Agent Architecture
+## 📬 Email Output
 
-| Agent         | Purpose                                   |
-|---------------|-------------------------------------------|
-| `planner_agent` | Plans 3 web search queries based on the input |
-| `search_agent`  | Performs and summarizes web searches     |
-| `writer_agent`  | Creates a full markdown research report  |
-| `email_agent`   | Converts report to HTML and sends email  |
-
----
-
-## 📬 Output
-
-- **Markdown report** displayed in real time
-- **HTML email** sent with the report content
-- **Streaming interface** with section-by-section progress
+- The generated report is sent via SendGrid email in clean HTML format.
+- A traceable link to the OpenAI trace is included for debugging and review.
 
 ---
 
 ## 📌 Notes
 
-- The app is asynchronous and supports real-time output using `asyncio`.
-- Make sure your email credentials and API keys are valid.
-- You can extend each agent's logic by modifying the `agents/` directory.
+- Each agent is individually configurable and runs on OpenAI GPT-4o-mini.
+- Agents communicate using a centralized `Runner` orchestration model.
+- Reports are long-form (5–10 pages) and detailed in markdown format.
 
 ---
 
 ## 🧠 Credits
 
-Built with 💡 by leveraging:
-
-- [Gradio](https://gradio.app/)
 - [OpenAI GPT-4o](https://openai.com/)
-- [LangChain Agents-like system]
-- [SendGrid Email API](https://sendgrid.com/)
-
+- [Streamlit](https://streamlit.io/)
+- [SendGrid API](https://sendgrid.com/)
